@@ -8,10 +8,11 @@ type PembayaranList struct {
   PembayaranList        []Pembayaran        `json:"pembayaran_list"`
 }
 
-type Pembayaran struct {  
+type Pembayaran struct {
   Nama                  string              `json:"nama"`
   Kamar                 string              `json:"kamar"`
   Foto                  string              `json:"foto"`
+  Id_kos                int                 `json:"id_kos"`
 
   Id_pembayaran         int                 `json:"id_pembayaran"`
   Id_renter             int                 `json:"id_renter"`
@@ -36,7 +37,7 @@ type Pembayaran struct {
 }
 
 type Pembayaran_lain struct {
-  Id_pembayaran_lain int                 `json:"id_pembayaran"`
+  Id_pembayaran_lain int                 `json:"id_pembayaran_lain"`
   Deskripsi          string              `json:"deskripsi"`
   Jumlah             int                 `json:"jumlah"`
 }

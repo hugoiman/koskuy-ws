@@ -36,16 +36,27 @@ func main() {
   e.POST("/authToken", c_auth.AuthToken, middleware.JWTWithConfig(c_auth.Config))
   e.POST("/login", c_auth.Login)
   e.GET("/logout", c_auth.Logout)
+  e.POST("/member", c_auth.RegistrasiMember)
+  e.POST("/checkUsername", c_auth.CheckUniqueUsername)
+  e.POST("/checkEmail", c_auth.CheckUniqueEmail)
 
   //  MEMBER
   e.GET("/member/:id", c_member.GetMember, middleware.JWTWithConfig(c_auth.Config))
-  e.PUT("/password", c_member.ChangePassword, middleware.JWTWithConfig(c_auth.Config))
+  e.PUT("/member/:id_member", c_member.EditMember, middleware.JWTWithConfig(c_auth.Config))
+  e.PUT("/password/:id_member", c_member.ChangePassword, middleware.JWTWithConfig(c_auth.Config))
 
-  // OWNER
-  e.GET("/mykoslist/:id_member", c_kos.GetMykosList, middleware.JWTWithConfig(c_auth.Config))
-  e.GET("/mykos", c_kos.GetMykos, middleware.JWTWithConfig(c_auth.Config))
-  e.GET("/laporan-pembayaran", c_pembayaran.GetLaporanPembayaran, middleware.JWTWithConfig(c_auth.Config))
-  e.GET("/renters", c_renter.GetDaftarRenter, middleware.JWTWithConfig(c_auth.Config))
+  // DATA KOS
+  e.GET("/mykos/:id_member", c_kos.GetMykosList, middleware.JWTWithConfig(c_auth.Config))
+  e.GET("/mykos/:id_kos/:id_member", c_kos.GetMykos, middleware.JWTWithConfig(c_auth.Config))
+
+  // PEMBAYARAN
+  e.GET("/laporan-pembayaran/:id_kos", c_pembayaran.GetLaporanPembayaran, middleware.JWTWithConfig(c_auth.Config))
+  e.GET("/history-pembayaran/:id_renter", c_pembayaran.GetHistoryPembayaran, middleware.JWTWithConfig(c_auth.Config)) //  belum(view, logic)
+  e.GET("/pembayaran/:id_pembayaran", c_pembayaran.GetPembayaran, middleware.JWTWithConfig(c_auth.Config)) // belum (view)
+
+  // RENTER
+  e.GET("/daftar-anak-kos/:id_kos", c_renter.GetDaftarRenter, middleware.JWTWithConfig(c_auth.Config))  // belum (view)
+  e.GET("/anak-kos/:id_renter", c_renter.GetRenter, middleware.JWTWithConfig(c_auth.Config))    // belum  (view)
 
   fmt.Println("service main started at :8000")
   e.Logger.Fatal(e.Start(":8000"))

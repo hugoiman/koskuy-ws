@@ -48,9 +48,9 @@ func Login(c echo.Context) error {
   if authentic == true {
     id_member   := m_auth.GetIdMember(data.Id)
     tokenString := GenerateJWT(c, id_member, "member")
-    return c.JSON(http.StatusOK, M{"token":tokenString})
+    return c.JSON(http.StatusOK, M{"token": tokenString})
 	} else {
-    return c.JSON(http.StatusOK,M{"status":"Unauthorized"})
+    return c.JSON(http.StatusOK,M{"status": false})
 	}
 }
 
@@ -96,4 +96,53 @@ func Logout(c echo.Context) error  {
 
   http.SetCookie(c.Response(), cookie)
   return c.Redirect(http.StatusMovedPermanently, "http://localhost:9000/auth")
+}
+
+func RegistrasiMember(c echo.Context) error  {
+  decoder := json.NewDecoder(c.Request().Body)
+  data    := struct {
+    Nama           string        `json:"nama"`
+    Username       string        `json:"username"`
+    Email          string        `json:"email"`
+    Password       string        `json:"password"`
+  }{}
+    if err := decoder.Decode(&data); err != nil {
+      http.Error(c.Response(), err.Error(), http.StatusInternalServerError)
+    }
+
+  var pass = sha1.New()
+  pass.Write([]byte(data.Password))
+  var encryptedPassword = fmt.Sprintf("%x", pass.Sum(nil))
+
+  create_member := m_auth.CreateMember(data.Nama, data.Username, data.Email, encryptedPassword)
+
+  return c.JSON(http.StatusOK, M{"status": create_member})
+}
+
+func CheckUniqueUsername(c echo.Context) error {
+  decoder := json.NewDecoder(c.Request().Body)
+  data    := struct {
+    Id_member           int           `json:"id_member"`
+    Username            string        `json:"username"`
+  }{}
+    if err := decoder.Decode(&data); err != nil {
+      http.Error(c.Response(), err.Error(), http.StatusInternalServerError)
+    }
+
+  isUnique := m_auth.CheckUniqueUsername(data.Username, data.Id_member)
+  return c.JSON(http.StatusOK, M{"status": isUnique})
+}
+
+func CheckUniqueEmail(c echo.Context) error {
+  decoder := json.NewDecoder(c.Request().Body)
+  data    := struct {
+    Id_member           int           `json:"id_member"`
+    Email               string        `json:"email"`
+  }{}
+    if err := decoder.Decode(&data); err != nil {
+      http.Error(c.Response(), err.Error(), http.StatusInternalServerError)
+    }
+
+  isUnique := m_auth.CheckUniqueEmail(data.Email, data.Id_member)
+  return c.JSON(http.StatusOK, M{"status": isUnique})
 }
