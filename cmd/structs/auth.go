@@ -9,3 +9,8 @@ type JwtCustomClaims struct {
   User                 string              `json:"user"`
 	jwt.StandardClaims
 }
+
+type JwtResetPassword struct {
+	Email              string              `json:"email"`
+	jwt.StandardClaims
+}

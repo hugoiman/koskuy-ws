@@ -39,6 +39,8 @@ func main() {
   e.POST("/member", c_auth.RegistrasiMember)
   e.POST("/checkUsername", c_auth.CheckUniqueUsername)
   e.POST("/checkEmail", c_auth.CheckUniqueEmail)
+  e.POST("/forgot-password", c_auth.ForgotPassword)
+  e.POST("/reset-password", c_auth.ResetPassword, middleware.JWTWithConfig(c_auth.ConfigResetPassword))
 
   //  MEMBER
   e.GET("/member/:id", c_member.GetMember, middleware.JWTWithConfig(c_auth.Config))

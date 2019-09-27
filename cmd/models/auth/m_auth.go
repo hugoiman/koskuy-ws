@@ -77,3 +77,17 @@ func CreateMember(nama, username, email, password string) bool {
     return false
   }
 }
+func UpdatePassword(email, password_baru string) bool {
+  verifikasi_password := true
+  con     :=  db.Connect()
+  query   :=  "UPDATE member SET password = ?, verifikasi_password = ? WHERE email = ?"
+  _, err  :=  con.Exec(query, password_baru, verifikasi_password, email)
+
+  defer con.Close()
+
+  if err == nil {
+    return true
+  } else {
+    return false
+  }
+}
