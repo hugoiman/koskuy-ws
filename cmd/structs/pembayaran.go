@@ -33,11 +33,11 @@ type Pembayaran struct {
   Jatuh_tempo           string              `json:"jatuh_tempo"`
   Tanggal_dibayar       string              `json:"tanggal_dibayar"`
 
-  PembayaranLainList    []Pembayaran_lain   `json:"pembayaran_lain"`
+  BiayaTambahanList     []Biaya_tambahan    `json:"biaya_tambahan"`
 }
 
-type Pembayaran_lain struct {
-  Id_pembayaran_lain int                 `json:"id_pembayaran_lain"`
-  Deskripsi          string              `json:"deskripsi"`
-  Jumlah             int                 `json:"jumlah"`
+type Biaya_tambahan struct {
+  Id_biaya              int                 `json:"id_biaya"`
+  Deskripsi             string              `json:"deskripsi"`
+  Biaya                 int                 `json:"biaya"`
 }

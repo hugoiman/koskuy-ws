@@ -30,7 +30,7 @@ func GetLaporanPembayaran(id_kos, bulan, tahun string) structs.PembayaranList {
     pembayaran.Jatuh_tempo = pembayaran.Jatuh_tempo_ori.Format("02 Jan 2006")
     pembayaran.Tanggal_dibayar = pembayaran.Tanggal_dibayar_ori.Format("02 Jan 2006")
 
-    pembayaran.PembayaranLainList = make([]structs.Pembayaran_lain,0)
+    pembayaran.BiayaTambahanList = make([]structs.Biaya_tambahan,0)
 
     if err2 != nil {
       fmt.Println(err2.Error())
@@ -40,13 +40,13 @@ func GetLaporanPembayaran(id_kos, bulan, tahun string) structs.PembayaranList {
 
   //  Get Pembayaran Lain
   for key, value := range pembayaran_list.PembayaranList{
-    query     :=  "SELECT id_pembayaran_lain, deskripsi, jumlah FROM pembayaran_lain WHERE id_pembayaran = ?"
+    query     :=  "SELECT id_biaya, deskripsi, biaya FROM biaya_tambahan WHERE id_pembayaran = ?"
     rows2, _  := con.Query(query, value.Id_pembayaran)
     for rows2.Next() {
-      var pembayaran_lain structs.Pembayaran_lain
+      var biaya_tambahan structs.Biaya_tambahan
 
-      _ = rows2.Scan(&pembayaran_lain.Id_pembayaran_lain, &pembayaran_lain.Deskripsi, &pembayaran_lain.Jumlah)
-      pembayaran_list.PembayaranList[key].PembayaranLainList = append(pembayaran_list.PembayaranList[key].PembayaranLainList, pembayaran_lain)
+      _ = rows2.Scan(&biaya_tambahan.Id_biaya, &biaya_tambahan.Deskripsi, &biaya_tambahan.Biaya)
+      pembayaran_list.PembayaranList[key].BiayaTambahanList = append(pembayaran_list.PembayaranList[key].BiayaTambahanList, biaya_tambahan)
     }
   }
 
@@ -78,7 +78,7 @@ func GetPembayaran(id_pembayaran string) structs.Pembayaran {
     pembayaran.Jatuh_tempo = pembayaran.Jatuh_tempo_ori.Format("02 Jan 2006")
     pembayaran.Tanggal_dibayar = pembayaran.Tanggal_dibayar_ori.Format("02 Jan 2006")
 
-    // pembayaran.PembayaranLainList = make([]structs.Pembayaran_lain, 0)
+    // pembayaran.BiayaTambahanList = make([]structs.Biaya_tambahan, 0)
 
     if err2 != nil {
       fmt.Println(err2.Error())
@@ -86,17 +86,17 @@ func GetPembayaran(id_pembayaran string) structs.Pembayaran {
   }
 
   //  Get Pembayaran Lain
-  query2    :=  "SELECT id_pembayaran_lain, deskripsi, jumlah FROM pembayaran_lain WHERE id_pembayaran = ?"
+  query2    :=  "SELECT id_biaya, deskripsi, biaya FROM biaya_tambahan WHERE id_pembayaran = ?"
   rows2, _  := con.Query(query2, pembayaran.Id_pembayaran)
 
-  pembayaran_lain       := structs.Pembayaran_lain{}
+  biaya_tambahan       := structs.Biaya_tambahan{}
 
   for rows2.Next() {
-    _ = rows2.Scan(&pembayaran_lain.Id_pembayaran_lain, &pembayaran_lain.Deskripsi, &pembayaran_lain.Jumlah)
+    _ = rows2.Scan(&biaya_tambahan.Id_biaya, &biaya_tambahan.Deskripsi, &biaya_tambahan.Biaya)
 
-    pembayaran.PembayaranLainList = append(pembayaran.PembayaranLainList, pembayaran_lain)
+    pembayaran.BiayaTambahanList = append(pembayaran.BiayaTambahanList, biaya_tambahan)
   }
-  fmt.Println(pembayaran_lain)
+  fmt.Println(biaya_tambahan)
 
 
   defer con.Close()
