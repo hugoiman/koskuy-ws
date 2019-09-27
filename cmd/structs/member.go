@@ -20,7 +20,6 @@ type Member struct {
   Ktp               string              `json:"ktp"`
   Tanggal_lahir_ori time.Time           `json:"tanggal_lahir_ori"`
   Verifikasi_email  bool                `json:"verifikasi_email"`
-  Verifikasi_password bool              `json:"verifikasi_password"`
   Verifikasi_no_hp  bool                `json:"verifikasi_no_hp"`
 
   Tanggal_lahir     string              `json:"tanggal_lahir"`
