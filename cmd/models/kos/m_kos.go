@@ -8,7 +8,7 @@ import (
 
 func GetMykosList(id_member string) structs.KosList {
   con     :=  db.Connect()
-  query   :=  "SELECT id_kos, id_member, nama_kos, tipe_kos, alamat, luas_kamar, total_kamar, kamar_terisi, deskripsi, verifikasi_kos, update_at FROM kos WHERE id_member = ?"
+  query   :=  "SELECT b.id_member, b.otoritas, b.status, a.id_kos, a.nama_kos, a.tipe_kos, a.alamat, a.luas_kamar, a.total_kamar, a.kamar_terisi, a.deskripsi, a.verifikasi_kos, a.update_at FROM kos a JOIN otoritas b ON a.id_kos = b.id_kos WHERE b.id_member = ?"
   rows, err := con.Query(query, id_member)
 
   if err != nil {
@@ -19,7 +19,8 @@ func GetMykosList(id_member string) structs.KosList {
   kos_list  := structs.KosList{}
 
   for rows.Next() {
-    err2 := rows.Scan(&kos.Id_kos, &kos.Id_member, &kos.Nama_kos, &kos.Tipe_kos, &kos.Alamat,
+    err2 := rows.Scan(&kos.Id_member, &kos.Otoritas, &kos.Status,
+      &kos.Id_kos, &kos.Nama_kos, &kos.Tipe_kos, &kos.Alamat,
       &kos.Luas_kamar, &kos.Total_kamar, &kos.Kamar_terisi,
       &kos.Deskripsi, &kos.Verifikasi_kos,
       &kos.Update_at_ori,
@@ -64,11 +65,12 @@ func GetMykosList(id_member string) structs.KosList {
 
 func GetMyKos(id_kos, id_member string) (structs.Kos,error) {
   con     :=  db.Connect()
-  query   :=  "SELECT id_kos, id_member, nama_kos, tipe_kos, alamat, luas_kamar, total_kamar, kamar_terisi, deskripsi, verifikasi_kos, update_at FROM kos WHERE id_kos = ? AND id_member = ?"
+  query   :=  "SELECT b.id_member, b.otoritas, b.status, a.id_kos, a.nama_kos, a.tipe_kos, a.alamat, a.luas_kamar, a.total_kamar, a.kamar_terisi, a.deskripsi, a.verifikasi_kos, a.update_at FROM kos a JOIN otoritas b ON a.id_kos = b.id_kos WHERE a.id_kos = ? AND b.id_member = ?"
 
   kos     :=  structs.Kos{}
   err     :=  con.QueryRow(query, id_kos, id_member).Scan(
-      &kos.Id_kos, &kos.Id_member, &kos.Nama_kos, &kos.Tipe_kos, &kos.Alamat,
+      &kos.Id_member, &kos.Otoritas, &kos.Status,
+      &kos.Id_kos, &kos.Nama_kos, &kos.Tipe_kos, &kos.Alamat,
       &kos.Luas_kamar, &kos.Total_kamar, &kos.Kamar_terisi,
       &kos.Deskripsi, &kos.Verifikasi_kos,
       &kos.Update_at_ori,
@@ -98,6 +100,16 @@ func GetMyKos(id_kos, id_member string) (structs.Kos,error) {
 
     _ = rows3.Scan(&harga_sewa.Bulanan, &harga_sewa.Harian, &harga_sewa.Mingguan, &harga_sewa.Tahunan)
     kos.HargaSewaList = append(kos.HargaSewaList, harga_sewa)
+  }
+
+  //  Get Rating
+  query4    := "SELECT AVG(kebersihan), AVG(kenyamanan), AVG(keamanan), AVG(fasilitas_kamar), AVG(fasilitas_bersama), AVG(harga), AVG(rating) FROM review WHERE id_kos = ?"
+  rows4, _  := con.Query(query4, id_kos)
+
+  for rows4.Next() {
+    var review structs.Review
+    _ = rows4.Scan(&review.Kebersihan, &review.Kenyamanan, &review.Keamanan, &review.Fasilitas_kamar, &review.Fasilitas_bersama, &review.Harga, &review.Rating)
+    kos.Review = append(kos.Review, review)
   }
 
   defer con.Close()

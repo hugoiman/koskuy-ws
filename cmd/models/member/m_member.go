@@ -54,7 +54,7 @@ func UpdatePassword(id, password_baru string) bool {
   }
 }
 
-func UpdateMember(id_member string, data structs.Member) bool {
+func UpdateMember(id_member int, data structs.Member) bool {
   con     :=  db.Connect()
   query   :=  "UPDATE member SET nama = ?, username = ?, tanggal_lahir = ?, jenis_kelamin= ?, alamat = ? WHERE id_member = ?"
   _, err  :=  con.Exec(query, data.Nama, data.Username, data.Tanggal_lahir, data.Jenis_kelamin, data.Alamat, id_member)
