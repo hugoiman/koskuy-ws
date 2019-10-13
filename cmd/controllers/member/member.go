@@ -56,10 +56,10 @@ func ChangePassword(c echo.Context) error {
 }
 
 func EditMember(c echo.Context) error {
-  // id_member := c.Param("id_member")
+  id_member := c.Param("id")
   decoder := json.NewDecoder(c.Request().Body)
   data    := structs.Member{}
   decoder.Decode(&data)
-  update_member := m_member.UpdateMember(data.Id_member, data)
+  update_member := m_member.UpdateMember(id_member, data)
   return c.JSON(http.StatusOK, M{"status": update_member})
 }

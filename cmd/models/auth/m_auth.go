@@ -39,7 +39,7 @@ func CheckUniqueUsername(username string, id_member int) bool {
 	var isUnique string
   con     :=  db.Connect()
   query   :=  "SELECT username FROM member WHERE username = ? AND id_member != ?"
-  err     :=  con.QueryRow(query, username, username).Scan(&isUnique)
+  err     :=  con.QueryRow(query, username, id_member).Scan(&isUnique)
 
   defer con.Close()
 
