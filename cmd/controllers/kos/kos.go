@@ -13,8 +13,8 @@ func GetMykosList(c echo.Context) error {
 }
 
 func GetMykos(c echo.Context) error {
-  id_kos    := c.Param("id_kos")
+  id        := c.Param("id_kos")  // slug/id_kos
   id_member := c.Param("id_member")
-  data,_    := m_kos.GetMyKos(id_kos, id_member)
+  data,_    := m_kos.GetMyKos(id, id_member)
   return c.JSON(http.StatusOK, data)
 }

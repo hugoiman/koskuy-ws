@@ -65,12 +65,12 @@ func GetMykosList(id_member string) structs.KosList {
   return kos_list
 }
 
-func GetMyKos(slug, id_member string) (structs.Kos,error) {
+func GetMyKos(id, id_member string) (structs.Kos,error) {
   con     :=  db.Connect()
-  query   :=  "SELECT b.id_member, b.otoritas, b.status, a.id_kos, a.nama_kos, a.tipe_kos, a.alamat, a.luas_kamar, a.total_kamar, a.kamar_terisi, a.deskripsi, a.keterangan_lain, a.status_kos, a.booking, a.slug, a.create_at, a.update_at FROM kos a JOIN otoritas b ON a.id_kos = b.id_kos WHERE a.slug = ? AND b.id_member = ?"
+  query   :=  "SELECT b.id_member, b.otoritas, b.status, a.id_kos, a.nama_kos, a.tipe_kos, a.alamat, a.luas_kamar, a.total_kamar, a.kamar_terisi, a.deskripsi, a.keterangan_lain, a.status_kos, a.booking, a.slug, a.create_at, a.update_at FROM kos a JOIN otoritas b ON a.id_kos = b.id_kos WHERE (a.slug = ? OR a.id_kos = ?) AND b.id_member = ?"
 
   kos     :=  structs.Kos{}
-  err     :=  con.QueryRow(query, slug, id_member).Scan(
+  err     :=  con.QueryRow(query, id, id, id_member).Scan(
       &kos.Id_member, &kos.Otoritas, &kos.Status,
       &kos.Id_kos, &kos.Nama_kos, &kos.Tipe_kos, &kos.Alamat,
       &kos.Luas_kamar, &kos.Total_kamar, &kos.Kamar_terisi,
