@@ -21,9 +21,15 @@ type Kos struct {
   Total_kamar      int                 `json:"total_kamar"`
   Kamar_terisi     int                 `json:"kamar_terisi"`
   Deskripsi        string              `json:"deskripsi"`
-  Verifikasi_kos   bool                `json:"verifikasi_kos"`
+  Keterangan_lain  string              `json:"keterangan_lain"`
+  Status_kos       string              `json:"status_kos"`
+  Booking          string              `json:"booking"`
+  Slug             string              `json:"slug"`
+
+  Create_at_ori    time.Time           `json:"create_at_ori"`
   Update_at_ori    time.Time           `json:"update_at_ori"`
 
+  Create_at        string              `json:"create_at"`
   Update_at        string              `json:"update_at"`
 
   HargaSewaList    []Harga_sewa        `json:"harga_sewa_list"`

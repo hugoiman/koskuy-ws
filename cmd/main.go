@@ -8,6 +8,8 @@ import (
   c_kos "koskuy-ws/cmd/controllers/kos"
   c_pembayaran "koskuy-ws/cmd/controllers/pembayaran"
   c_renter "koskuy-ws/cmd/controllers/renter"
+  c_booking "koskuy-ws/cmd/controllers/booking"
+  c_notifikasi "koskuy-ws/cmd/controllers/notifikasi"
 
   "github.com/labstack/echo"
   "github.com/labstack/echo/middleware"
@@ -44,7 +46,7 @@ func main() {
 
   //  MEMBER
   e.GET("/member/:id", c_member.GetMember, middleware.JWTWithConfig(c_auth.Config))
-  e.PUT("/member/:id_member", c_member.EditMember, middleware.JWTWithConfig(c_auth.Config))
+  e.PUT("/member/:id", c_member.EditMember, middleware.JWTWithConfig(c_auth.Config))
   e.PUT("/password/:id_member", c_member.ChangePassword, middleware.JWTWithConfig(c_auth.Config))
 
   // DATA KOS
@@ -59,6 +61,14 @@ func main() {
   // RENTER
   e.GET("/daftar-anak-kos/:id_kos", c_renter.GetDaftarRenter, middleware.JWTWithConfig(c_auth.Config))  // belum (view)
   e.GET("/anak-kos/:id_renter", c_renter.GetRenter, middleware.JWTWithConfig(c_auth.Config))    // belum  (view)
+
+  //  BOOKING
+  e.GET("/booking/:id", c_booking.GetBookingList, middleware.JWTWithConfig(c_auth.Config))  // id_member
+  e.PUT("/booking/:id", c_booking.UpdateStatusBooking, middleware.JWTWithConfig(c_auth.Config)) //  id_booking
+
+  //  Notifikasi
+  e.GET("/notifikasi_booking/:id_member", c_notifikasi.GetNotifikasiBookingList, middleware.JWTWithConfig(c_auth.Config))  // id_member
+  // e.GET("/total_notifikasi_booking/:id_member", c_notifikasi.GetNotifikasiList, middleware.JWTWithConfig(c_auth.Config))  // id_member
 
   fmt.Println("service main started at :8000")
   e.Logger.Fatal(e.Start(":8000"))

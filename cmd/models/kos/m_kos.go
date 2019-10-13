@@ -8,7 +8,7 @@ import (
 
 func GetMykosList(id_member string) structs.KosList {
   con     :=  db.Connect()
-  query   :=  "SELECT b.id_member, b.otoritas, b.status, a.id_kos, a.nama_kos, a.tipe_kos, a.alamat, a.luas_kamar, a.total_kamar, a.kamar_terisi, a.deskripsi, a.verifikasi_kos, a.update_at FROM kos a JOIN otoritas b ON a.id_kos = b.id_kos WHERE b.id_member = ?"
+  query   :=  "SELECT b.id_member, b.otoritas, b.status, a.id_kos, a.nama_kos, a.tipe_kos, a.alamat, a.luas_kamar, a.total_kamar, a.kamar_terisi, a.deskripsi, a.keterangan_lain, a.status_kos, a.booking, a.slug, a.create_at, a.update_at FROM kos a JOIN otoritas b ON a.id_kos = b.id_kos WHERE b.id_member = ? AND b.status = 'aktif'"
   rows, err := con.Query(query, id_member)
 
   if err != nil {
@@ -22,9 +22,11 @@ func GetMykosList(id_member string) structs.KosList {
     err2 := rows.Scan(&kos.Id_member, &kos.Otoritas, &kos.Status,
       &kos.Id_kos, &kos.Nama_kos, &kos.Tipe_kos, &kos.Alamat,
       &kos.Luas_kamar, &kos.Total_kamar, &kos.Kamar_terisi,
-      &kos.Deskripsi, &kos.Verifikasi_kos,
-      &kos.Update_at_ori,
+      &kos.Deskripsi, &kos.Keterangan_lain, &kos.Status_kos,
+      &kos.Booking, &kos.Slug,
+      &kos.Create_at_ori, &kos.Update_at_ori,
     )
+    kos.Create_at = kos.Create_at_ori.Format("02 Jan 2006")
     kos.Update_at = kos.Update_at_ori.Format("02 Jan 2006")
     kos.FotoKosList = make([]structs.Foto_kos,0)
 
@@ -63,18 +65,20 @@ func GetMykosList(id_member string) structs.KosList {
   return kos_list
 }
 
-func GetMyKos(id_kos, id_member string) (structs.Kos,error) {
+func GetMyKos(slug, id_member string) (structs.Kos,error) {
   con     :=  db.Connect()
-  query   :=  "SELECT b.id_member, b.otoritas, b.status, a.id_kos, a.nama_kos, a.tipe_kos, a.alamat, a.luas_kamar, a.total_kamar, a.kamar_terisi, a.deskripsi, a.verifikasi_kos, a.update_at FROM kos a JOIN otoritas b ON a.id_kos = b.id_kos WHERE a.id_kos = ? AND b.id_member = ?"
+  query   :=  "SELECT b.id_member, b.otoritas, b.status, a.id_kos, a.nama_kos, a.tipe_kos, a.alamat, a.luas_kamar, a.total_kamar, a.kamar_terisi, a.deskripsi, a.keterangan_lain, a.status_kos, a.booking, a.slug, a.create_at, a.update_at FROM kos a JOIN otoritas b ON a.id_kos = b.id_kos WHERE a.slug = ? AND b.id_member = ?"
 
   kos     :=  structs.Kos{}
-  err     :=  con.QueryRow(query, id_kos, id_member).Scan(
+  err     :=  con.QueryRow(query, slug, id_member).Scan(
       &kos.Id_member, &kos.Otoritas, &kos.Status,
       &kos.Id_kos, &kos.Nama_kos, &kos.Tipe_kos, &kos.Alamat,
       &kos.Luas_kamar, &kos.Total_kamar, &kos.Kamar_terisi,
-      &kos.Deskripsi, &kos.Verifikasi_kos,
-      &kos.Update_at_ori,
+      &kos.Deskripsi, &kos.Keterangan_lain, &kos.Status_kos,
+      &kos.Booking, &kos.Slug,
+      &kos.Create_at_ori, &kos.Update_at_ori,
   )
+  kos.Create_at = kos.Create_at_ori.Format("02 Jan 2006")
   kos.Update_at = kos.Update_at_ori.Format("02 Jan 2006")
   kos.FotoKosList = make([]structs.Foto_kos,0)
 
@@ -84,7 +88,7 @@ func GetMyKos(id_kos, id_member string) (structs.Kos,error) {
 
   //  Get Foto
   query2    := "SELECT id_foto_kos, nama_foto_kos FROM foto_kos WHERE id_kos = ?"
-  rows2, _  := con.Query(query2, id_kos)
+  rows2, _  := con.Query(query2, kos.Id_kos)
   for rows2.Next() {
     var foto_kos structs.Foto_kos
 
@@ -94,7 +98,7 @@ func GetMyKos(id_kos, id_member string) (structs.Kos,error) {
 
   //  Get Harga Sewa
   query3    := "SELECT bulanan, harian, mingguan, tahunan FROM harga_sewa WHERE id_kos = ?"
-  rows3, _  := con.Query(query3, id_kos)
+  rows3, _  := con.Query(query3, kos.Id_kos)
   for rows3.Next() {
     var harga_sewa structs.Harga_sewa
 
@@ -104,7 +108,7 @@ func GetMyKos(id_kos, id_member string) (structs.Kos,error) {
 
   //  Get Rating
   query4    := "SELECT AVG(kebersihan), AVG(kenyamanan), AVG(keamanan), AVG(fasilitas_kamar), AVG(fasilitas_bersama), AVG(harga), AVG(rating) FROM review WHERE id_kos = ?"
-  rows4, _  := con.Query(query4, id_kos)
+  rows4, _  := con.Query(query4, kos.Id_kos)
 
   for rows4.Next() {
     var review structs.Review
