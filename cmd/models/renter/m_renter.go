@@ -6,14 +6,14 @@ import (
   "koskuy-ws/cmd/structs"
 )
 
-func GetRenter(id_renter string) (structs.Renter, error) {
+func GetRenter(slug string) (structs.Renter, error) {
   con     :=  db.Connect()
-  query   :=  "SELECT id_renter, id_kos, nama, email, no_hp, jenis_kelamin, alamat, foto, ktp, kamar, status_renter, tanggal_lahir from renter WHERE id_renter = ?"
+  query   :=  "SELECT id_renter, id_kos, id_member, nama, email, no_hp, jenis_kelamin, alamat, pekerjaan, foto, ktp, kamar, status_renter, slug, tanggal_lahir from renter WHERE slug = ?"
 
   renter  :=  structs.Renter{}
-  err     :=  con.QueryRow(query, id_renter).Scan(
-    &renter.Id_renter, &renter.Id_kos, &renter.Nama, &renter.Email, &renter.No_hp, &renter.Jenis_kelamin,
-    &renter.Alamat, &renter.Foto, &renter.Ktp, &renter.Kamar, &renter.Status_renter, &renter.Tanggal_lahir_ori,
+  err     :=  con.QueryRow(query, slug).Scan(
+    &renter.Id_renter, &renter.Id_kos, &renter.Id_member, &renter.Nama, &renter.Email, &renter.No_hp, &renter.Jenis_kelamin,
+    &renter.Alamat, &renter.Pekerjaan, &renter.Foto, &renter.Ktp, &renter.Kamar, &renter.Status_renter, &renter.Slug, &renter.Tanggal_lahir_ori,
   )
   renter.Tanggal_lahir = renter.Tanggal_lahir_ori.Format("02 Jan 2006")
 
@@ -27,7 +27,7 @@ func GetRenter(id_renter string) (structs.Renter, error) {
 
 func GetDaftarRenter(id_kos string) structs.RenterList {
   con     :=  db.Connect()
-  query   :=  "SELECT id_renter, id_kos, nama, email, no_hp, jenis_kelamin, alamat, foto, ktp, kamar, status_renter, tanggal_lahir from renter WHERE id_kos = ?"
+  query   :=  "SELECT a.id_renter, a.id_kos, a.id_member, a.nama, a.no_hp, a.pekerjaan, a.foto, a.kamar, a.status_renter, a.slug, b.status_pembayaran FROM renter a JOIN pembayaran b ON a.id_renter = b.id_renter WHERE a.id_kos = ? AND b.id_pembayaran IN (SELECT MAX(b.id_pembayaran) FROM pembayaran b GROUP BY b.id_renter)"
   rows, err := con.Query(query, id_kos)
 
   if err != nil {
@@ -39,10 +39,9 @@ func GetDaftarRenter(id_kos string) structs.RenterList {
 
   for rows.Next() {
     err2 := rows.Scan(
-      &renter.Id_renter, &renter.Id_kos, &renter.Nama, &renter.Email, &renter.No_hp, &renter.Jenis_kelamin,
-      &renter.Alamat, &renter.Foto, &renter.Ktp, &renter.Kamar, &renter.Status_renter, &renter.Tanggal_lahir_ori,
+      &renter.Id_renter, &renter.Id_kos, &renter.Id_member, &renter.Nama, &renter.No_hp, &renter.Pekerjaan,
+      &renter.Foto, &renter.Kamar, &renter.Status_renter, &renter.Slug, &renter.Status_pembayaran,
     )
-    renter.Tanggal_lahir = renter.Tanggal_lahir_ori.Format("02 Jan 2006")
 
     if err2 != nil {
       fmt.Println(err2.Error())

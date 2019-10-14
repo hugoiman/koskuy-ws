@@ -13,7 +13,7 @@ func GetDaftarRenter(c echo.Context) error {
 }
 
 func GetRenter(c echo.Context) error {
-  id_renter := c.Param("id_renter")
-  data, _   := m_renter.GetRenter(id_renter)
+  slug := c.Param("slug")
+  data, _   := m_renter.GetRenter(slug)
   return c.JSON(http.StatusOK, data)
 }

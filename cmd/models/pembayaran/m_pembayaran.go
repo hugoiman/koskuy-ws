@@ -46,10 +46,10 @@ func GetStatusPembayaran(id_kos string) (int, int, int, int) {
   var total_renter, lunas, angsur, belum_bayar int
   con     :=  db.Connect()
 
-  query1  :=  "SELECT COUNT(a.id_renter) FROM renter a JOIN pembayaran b ON a.id_renter = b.id_renter WHERE a.id_kos = ? AND a.status_renter = 'aktif'"
-  query2  :=  "SELECT COUNT(a.id_renter) FROM renter a JOIN pembayaran b ON a.id_renter = b.id_renter WHERE a.id_kos = ? AND a.status_renter = 'aktif' AND b.status_pembayaran = 'lunas'"
-  query3  :=  "SELECT COUNT(a.id_renter) FROM renter a JOIN pembayaran b ON a.id_renter = b.id_renter WHERE a.id_kos = ? AND a.status_renter = 'aktif' AND b.status_pembayaran = 'angsur'"
-  query4  :=  "SELECT COUNT(a.id_renter) FROM renter a JOIN pembayaran b ON a.id_renter = b.id_renter WHERE a.id_kos = ? AND a.status_renter = 'aktif' AND b.status_pembayaran = 'belum bayar'"
+  query1  :=  "SELECT COUNT(a.id_renter) FROM renter a JOIN pembayaran b ON a.id_renter = b.id_renter WHERE a.id_kos = ? AND a.status_renter = 'aktif' AND b.id_pembayaran IN (SELECT MAX(b.id_pembayaran) FROM pembayaran b GROUP BY b.id_renter)"
+  query2  :=  "SELECT COUNT(a.id_renter) FROM renter a JOIN pembayaran b ON a.id_renter = b.id_renter WHERE a.id_kos = ? AND a.status_renter = 'aktif' AND b.status_pembayaran = 'lunas' AND b.id_pembayaran IN (SELECT MAX(b.id_pembayaran) FROM pembayaran b GROUP BY b.id_renter)"
+  query3  :=  "SELECT COUNT(a.id_renter) FROM renter a JOIN pembayaran b ON a.id_renter = b.id_renter WHERE a.id_kos = ? AND a.status_renter = 'aktif' AND b.status_pembayaran = 'angsur' AND b.id_pembayaran IN (SELECT MAX(b.id_pembayaran) FROM pembayaran b GROUP BY b.id_renter)"
+  query4  :=  "SELECT COUNT(a.id_renter) FROM renter a JOIN pembayaran b ON a.id_renter = b.id_renter WHERE a.id_kos = ? AND a.status_renter = 'aktif' AND b.status_pembayaran = 'belum bayar' AND b.id_pembayaran IN (SELECT MAX(b.id_pembayaran) FROM pembayaran b GROUP BY b.id_renter)"
 
   err1 :=  con.QueryRow(query1, id_kos).Scan(&total_renter)
   err2 :=  con.QueryRow(query2, id_kos).Scan(&lunas)
