@@ -55,12 +55,13 @@ func main() {
 
   // PEMBAYARAN
   e.GET("/laporan-pembayaran/:id_kos", c_pembayaran.GetLaporanPembayaran, middleware.JWTWithConfig(c_auth.Config))
+  e.GET("/status-pembayaran/:id_kos", c_pembayaran.GetStatusPembayaran, middleware.JWTWithConfig(c_auth.Config)) // belum (view)
   e.GET("/history-pembayaran/:id_renter", c_pembayaran.GetHistoryPembayaran, middleware.JWTWithConfig(c_auth.Config)) //  belum(view, logic)
   e.GET("/pembayaran/:id_pembayaran", c_pembayaran.GetPembayaran, middleware.JWTWithConfig(c_auth.Config)) // belum (view)
 
   // RENTER
   e.GET("/daftar-anak-kos/:id_kos", c_renter.GetDaftarRenter, middleware.JWTWithConfig(c_auth.Config))  // belum (view)
-  e.GET("/anak-kos/:id_renter", c_renter.GetRenter, middleware.JWTWithConfig(c_auth.Config))    // belum  (view)
+  e.GET("/anak-kos/:slug", c_renter.GetRenter, middleware.JWTWithConfig(c_auth.Config))    // belum  (view)
 
   //  BOOKING
   e.GET("/booking/:id", c_booking.GetBookingList, middleware.JWTWithConfig(c_auth.Config))  // id_member

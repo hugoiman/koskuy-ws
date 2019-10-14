@@ -12,6 +12,7 @@ type Pembayaran struct {
   Nama                  string              `json:"nama"`
   Kamar                 string              `json:"kamar"`
   Foto                  string              `json:"foto"`
+  Nama_kos              string              `json:"nama_kos"`
   Id_kos                int                 `json:"id_kos"`
 
   Id_pembayaran         int                 `json:"id_pembayaran"`
@@ -21,7 +22,7 @@ type Pembayaran struct {
   Durasi                string              `json:"durasi"`
   Tanggal_masuk_ori     time.Time           `json:"tanggal_masuk_ori"`
   Tanggal_akhir_ori     time.Time           `json:"tanggal_akhir_ori"`
-  Tanggal_penagihan_ori time.Time           `json:"tanggal_penagihan_ori"`
+  Tanggal_penagihan     string              `json:"tanggal_penagihan"`
   Harga_sewa            int                 `json:"harga_sewa"`
   Total_pembayaran      int                 `json:"total_pembayaran"`
   Jatuh_tempo_ori       time.Time           `json:"jatuh_tempo_ori"`
@@ -31,8 +32,12 @@ type Pembayaran struct {
 
   Tanggal_masuk         string              `json:"tanggal_masuk"`
   Tanggal_akhir         string              `json:"tanggal_akhir"`
-  Tanggal_penagihan     string              `json:"tanggal_penagihan"`
   Jatuh_tempo           string              `json:"jatuh_tempo"`
+
+  Nominal                int                `json:"nominal"`
+  Tanggal_pembayaran_ori time.Time          `json:"tanggal_pembayaran_ori"`
+  Tanggal_pembayaran     string             `json:"tanggal_pembayaran"`
+
 
   TanggalPembayaranList []Tanggal_pembayaran `json:"tanggal_pembayaran_list"`
   BiayaTambahanList     []Biaya_tambahan     `json:"biaya_tambahan_list"`
