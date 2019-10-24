@@ -11,6 +11,6 @@ type JwtCustomClaims struct {
 }
 
 type JwtResetPassword struct {
-	Email              string              `json:"email"`
+	Email                string              `json:"email"`
 	jwt.StandardClaims
 }

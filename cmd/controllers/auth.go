@@ -1,4 +1,4 @@
-package auth
+package controllers
 
 import (
   "net/http"
@@ -9,8 +9,8 @@ import (
 
   "koskuy-ws/cmd/structs"
 
-  c_email "koskuy-ws/cmd/controllers/email"
-  m_auth "koskuy-ws/cmd/models/auth"
+  "koskuy-ws/cmd/controllers/email"
+  models "koskuy-ws/cmd/models"
 
   "github.com/labstack/echo"
   "github.com/labstack/echo/middleware"
@@ -49,10 +49,10 @@ func Login(c echo.Context) error {
   var encrypted = sha.Sum(nil)
   var encryptedString = fmt.Sprintf("%x", encrypted)
 
-  authentic    := m_auth.IsAuth(data.Id, encryptedString)
+  authentic    := models.IsAuth(data.Id, encryptedString)
 
   if authentic == true {
-    id_member   := m_auth.GetIdMember(data.Id)
+    id_member   := models.GetIdMember(data.Id)
     tokenString := GenerateJWT(c, id_member, "member")
     return c.JSON(http.StatusOK, M{"token": tokenString})
 	} else {
@@ -120,7 +120,7 @@ func RegistrasiMember(c echo.Context) error  {
   pass.Write([]byte(data.Password))
   var encryptedPassword = fmt.Sprintf("%x", pass.Sum(nil))
 
-  create_member := m_auth.CreateMember(data.Nama, data.Username, data.Email, encryptedPassword)
+  create_member := models.CreateMember(data.Nama, data.Username, data.Email, encryptedPassword)
 
   return c.JSON(http.StatusOK, M{"status": create_member})
 }
@@ -135,7 +135,7 @@ func CheckUniqueUsername(c echo.Context) error {
       http.Error(c.Response(), err.Error(), http.StatusInternalServerError)
     }
 
-  isUnique := m_auth.CheckUniqueUsername(data.Username, data.Id_member)
+  isUnique := models.CheckUniqueUsername(data.Username, data.Id_member)
   return c.JSON(http.StatusOK, M{"status": isUnique})
 }
 
@@ -149,7 +149,7 @@ func CheckUniqueEmail(c echo.Context) error {
       http.Error(c.Response(), err.Error(), http.StatusInternalServerError)
     }
 
-  isUnique := m_auth.CheckUniqueEmail(data.Email, data.Id_member)
+  isUnique := models.CheckUniqueEmail(data.Email, data.Id_member)
   return c.JSON(http.StatusOK, M{"status": isUnique})
 }
 
@@ -168,7 +168,7 @@ func ForgotPassword(c echo.Context) error {
   subjek    := "Koskuy - [Reset Password]"
   pesan     := "Hallo,<br<br>Email ini telah dikirimkan agar kamu dapat mengatur ulang password.<br><br>Silahkan klik link dibawah ini untuk me-reset password kamu. Link ini akan kadaluarsa dalam waktu 30 menit.<br><br>"+link
 
-  sent      := c_email.SendEmail(data.Email, subjek, pesan)
+  sent      := controllers.SendEmail(data.Email, subjek, pesan)
   return c.JSON(http.StatusOK, M{"status": sent}) // true/false
 }
 
@@ -213,7 +213,7 @@ func ResetPassword(c echo.Context) error  {
   var encryptedPassword = fmt.Sprintf("%x", pass.Sum(nil))
 
   //  Update Password
-  update_password := m_auth.UpdatePassword(data_token.Email, encryptedPassword)
+  update_password := models.UpdatePassword(data_token.Email, encryptedPassword)
 
   return c.JSON(http.StatusOK, M{"status": update_password}) // true/false
 }

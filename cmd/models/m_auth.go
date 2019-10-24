@@ -1,4 +1,4 @@
-package auth_member
+package models
 
 import(
   "fmt"

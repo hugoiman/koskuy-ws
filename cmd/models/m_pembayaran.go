@@ -195,3 +195,7 @@ func GetPembayaran(id_pembayaran string) structs.Pembayaran {
 func GetHistoryPembayaran(id_renter string) string {
   return id_renter
 }
+
+func GetLaporanBulanan(id_kos, tahun string)   {
+
+}
