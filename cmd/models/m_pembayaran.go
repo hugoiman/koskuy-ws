@@ -133,7 +133,7 @@ func GetStatusPembayaran(id_kos string) (int, int, int, int) {
 
 func GetPembayaran(id_pembayaran string) structs.Pembayaran {
   con     :=  db.Connect()
-  query   :=  "SELECT b.nama, b.kamar, b.foto, c.nama_kos, b.id_kos, a.id_pembayaran, a.id_renter, a.id_member, a.tipe_pembayaran, a.durasi, a.tanggal_masuk, a.tanggal_akhir, a.tanggal_penagihan, a.harga_sewa, a.total_pembayaran, a.jatuh_tempo, a.total_dibayar, a.tagihan, a.status_pembayaran FROM pembayaran a  JOIN renter b ON a.id_renter = b.id_renter JOIN kos c ON b.id_kos = c.id_kos WHERE a.id_pembayaran = ?"
+  query   :=  "SELECT b.nama, b.foto, c.nama_kos, a.id_pembayaran, a.id_renter, a.id_member, a.kamar, a.tipe_pembayaran, a.durasi, a.tanggal_masuk, a.tanggal_akhir, a.tanggal_penagihan, a.denda, a.jatuh_tempo, a.harga_sewa, a.total_pembayaran, a.total_dibayar, a.tagihan, a.status_pembayaran FROM pembayaran a JOIN renter b ON a.id_renter = b.id_renter JOIN kos c ON b.id_kos = c.id_kos WHERE a.id_pembayaran = ?"
   rows, err := con.Query(query, id_pembayaran)
 
   if err != nil {
@@ -144,11 +144,12 @@ func GetPembayaran(id_pembayaran string) structs.Pembayaran {
 
   for rows.Next() {
     err2 := rows.Scan(
-      &pembayaran.Nama, &pembayaran.Kamar, &pembayaran.Foto, &pembayaran.Nama_kos,
-      &pembayaran.Id_kos, &pembayaran.Id_pembayaran, &pembayaran.Id_renter, &pembayaran.Id_member,
-      &pembayaran.Tipe_pembayaran, &pembayaran.Durasi,
+      &pembayaran.Nama, &pembayaran.Foto, &pembayaran.Nama_kos,
+      &pembayaran.Id_pembayaran, &pembayaran.Id_renter, &pembayaran.Id_member,
+      &pembayaran.Kamar, &pembayaran.Tipe_pembayaran, &pembayaran.Durasi,
       &pembayaran.Tanggal_masuk_ori, &pembayaran.Tanggal_akhir_ori, &pembayaran.Tanggal_penagihan,
-      &pembayaran.Harga_sewa, &pembayaran.Total_pembayaran, &pembayaran.Jatuh_tempo_ori,
+      &pembayaran.Denda, &pembayaran.Jatuh_tempo_ori,
+      &pembayaran.Harga_sewa, &pembayaran.Total_pembayaran,
       &pembayaran.Total_dibayar, &pembayaran.Tagihan, &pembayaran.Status_pembayaran,
     )
     pembayaran.Tanggal_masuk = pembayaran.Tanggal_masuk_ori.Format("02 Jan 2006")
