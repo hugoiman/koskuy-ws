@@ -85,3 +85,26 @@ type AddTanggalPembayaran struct {
   Tanggal_pembayaran    string              `json:"tanggal_pembayaran"`
   Nominal               int                 `json:"nominal"`
 }
+
+type LaporanPembayaranList struct {
+  LaporanPembayaranList []LaporanPembayaran `json:"laporan_pembayaran"`
+}
+
+type LaporanPembayaran struct {
+  Nama                  string              `json:"nama"`
+  Kamar                 string              `json:"kamar"`
+  Foto                  string              `json:"foto"`
+
+  Id_pembayaran         int                 `json:"id_pembayaran"`
+  Id_renter             int                 `json:"id_renter"`
+  Tanggal_akhir_ori     time.Time           `json:"tanggal_akhir_ori"`
+  Total_pembayaran      int                 `json:"total_pembayaran"`
+  Tagihan               int                 `json:"tagihan"`
+  Status_pembayaran     string              `json:"status_pembayaran"`
+
+  Nominal                int                `json:"nominal"`
+  Tanggal_pembayaran_ori time.Time          `json:"tanggal_pembayaran_ori"`
+  
+  Tanggal_pembayaran     string             `json:"tanggal_pembayaran"`
+  Tanggal_akhir         string              `json:"tanggal_akhir"`
+}

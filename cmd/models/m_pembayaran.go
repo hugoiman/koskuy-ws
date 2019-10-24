@@ -6,31 +6,31 @@ import (
   "koskuy-ws/cmd/structs"
 )
 
-func GetLaporanPembayaran(id_kos, bulan, tahun string) structs.PembayaranList {
+func GetLaporanPembayaran(id_kos, bulan, tahun string) structs.LaporanPembayaranList {
   con     :=  db.Connect()
-  query   :=  "SELECT b.nama, b.kamar, b.foto, b.id_kos, a.id_pembayaran, a.id_renter, a.tanggal_akhir, a.total_pembayaran, a.total_dibayar, a.tagihan, a.status_pembayaran, c.tanggal_pembayaran, c.nominal FROM pembayaran a JOIN renter b ON a.id_renter = b.id_renter JOIN tanggal_pembayaran c ON a.id_pembayaran = c.id_pembayaran WHERE b.id_kos = ? AND MONTH(c.tanggal_pembayaran) = ? AND YEAR(c.tanggal_pembayaran) = ?"
+  query   :=  "SELECT b.nama, b.kamar, b.foto, a.id_pembayaran, a.id_renter, a.tanggal_akhir, a.total_pembayaran, a.tagihan, a.status_pembayaran, c.tanggal_pembayaran, c.nominal FROM pembayaran a JOIN renter b ON a.id_renter = b.id_renter JOIN tanggal_pembayaran c ON a.id_pembayaran = c.id_pembayaran WHERE b.id_kos = ? AND MONTH(c.tanggal_pembayaran) = ? AND YEAR(c.tanggal_pembayaran) = ?"
   rows, err := con.Query(query, id_kos, bulan, tahun)
 
   if err != nil {
     fmt.Println(err.Error())
   }
 
-  pembayaran       := structs.Pembayaran{}
-  pembayaran_list  := structs.PembayaranList{}
+  pembayaran       := structs.LaporanPembayaran{}
+  pembayaran_list  := structs.LaporanPembayaranList{}
 
   for rows.Next() {
     err2 := rows.Scan(
       &pembayaran.Nama, &pembayaran.Kamar, &pembayaran.Foto,
-      &pembayaran.Id_kos, &pembayaran.Id_pembayaran, &pembayaran.Id_renter,
+      &pembayaran.Id_pembayaran, &pembayaran.Id_renter,
       &pembayaran.Tanggal_akhir_ori,
-      &pembayaran.Total_pembayaran, &pembayaran.Total_dibayar, &pembayaran.Tagihan, &pembayaran.Status_pembayaran,
+      &pembayaran.Total_pembayaran, &pembayaran.Tagihan, &pembayaran.Status_pembayaran,
       &pembayaran.Tanggal_pembayaran_ori, &pembayaran.Nominal,
     )
 
     pembayaran.Tanggal_akhir = pembayaran.Tanggal_akhir_ori.Format("02 Jan 2006")
     pembayaran.Tanggal_pembayaran = pembayaran.Tanggal_pembayaran_ori.Format("02 Jan 2006")
 
-    pembayaran_list.PembayaranList = append(pembayaran_list.PembayaranList, pembayaran)
+    pembayaran_list.LaporanPembayaranList = append(pembayaran_list.LaporanPembayaranList, pembayaran)
 
     if err2 != nil {
       fmt.Println(err2.Error())
