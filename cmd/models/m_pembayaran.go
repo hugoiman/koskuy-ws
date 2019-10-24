@@ -133,7 +133,7 @@ func GetStatusPembayaran(id_kos string) (int, int, int, int) {
 
 func GetPembayaran(id_pembayaran string) structs.Pembayaran {
   con     :=  db.Connect()
-  query   :=  "SELECT b.nama, b.foto, c.nama_kos, a.id_pembayaran, a.id_renter, a.id_member, a.kamar, a.tipe_pembayaran, a.durasi, a.tanggal_masuk, a.tanggal_akhir, a.tanggal_penagihan, a.denda, a.jatuh_tempo, a.harga_sewa, a.total_pembayaran, a.total_dibayar, a.tagihan, a.status_pembayaran FROM pembayaran a JOIN renter b ON a.id_renter = b.id_renter JOIN kos c ON b.id_kos = c.id_kos WHERE a.id_pembayaran = ?"
+  query   :=  "SELECT b.nama, b.foto, c.nama_kos, a.id_kos, a.id_pembayaran, a.id_renter, a.id_member, a.kamar, a.tipe_pembayaran, a.durasi, a.tanggal_masuk, a.tanggal_akhir, a.tanggal_penagihan, a.denda, a.jatuh_tempo, a.harga_sewa, a.total_pembayaran, a.total_dibayar, a.tagihan, a.status_pembayaran FROM pembayaran a JOIN renter b ON a.id_renter = b.id_renter JOIN kos c ON b.id_kos = c.id_kos WHERE a.id_pembayaran = ?"
   rows, err := con.Query(query, id_pembayaran)
 
   if err != nil {
@@ -144,7 +144,7 @@ func GetPembayaran(id_pembayaran string) structs.Pembayaran {
 
   for rows.Next() {
     err2 := rows.Scan(
-      &pembayaran.Nama, &pembayaran.Foto, &pembayaran.Nama_kos,
+      &pembayaran.Nama, &pembayaran.Foto, &pembayaran.Nama_kos, &pembayaran.Id_kos,
       &pembayaran.Id_pembayaran, &pembayaran.Id_renter, &pembayaran.Id_member,
       &pembayaran.Kamar, &pembayaran.Tipe_pembayaran, &pembayaran.Durasi,
       &pembayaran.Tanggal_masuk_ori, &pembayaran.Tanggal_akhir_ori, &pembayaran.Tanggal_penagihan,
@@ -197,6 +197,62 @@ func GetHistoryPembayaran(id_renter string) string {
   return id_renter
 }
 
-func GetLaporanBulanan(id_kos, tahun string)   {
+func GetLaporanBulanan(id_kos, tahun string) structs.LaporanBulananList {
+  con     :=  db.Connect()
+  query   :=  "SELECT a.tanggal_pembayaran, SUM(a.nominal) FROM tanggal_pembayaran a JOIN pembayaran b ON a.id_pembayaran = b.id_pembayaran WHERE b.id_kos = ? AND YEAR(a.tanggal_pembayaran) = ? GROUP BY MONTH(a.tanggal_pembayaran)"
+  rows, err := con.Query(query, id_kos, tahun)
 
+  if err != nil {
+    fmt.Println(err.Error())
+  }
+
+  bulanan       := structs.LaporanBulanan{}
+  bulanan_list  := structs.LaporanBulananList{}
+
+  for rows.Next() {
+    err2 := rows.Scan(
+      &bulanan.Periode_ori, &bulanan.Pemasukan,
+    )
+
+    if err2 != nil {
+      fmt.Println(err2.Error())
+    }
+
+    bulanan.Periode = bulanan.Periode_ori.Format("January 2006")
+    bulanan_list.LaporanBulananList = append(bulanan_list.LaporanBulananList, bulanan)
+  }
+
+  defer con.Close()
+
+  return bulanan_list
+}
+
+func CreatePembayaran(data structs.AddPembayaran) (bool, int) {
+  con     :=  db.Connect()
+  query   :=  "INSERT INTO pembayaran (id_kos, id_renter, id_member, kamar, tipe_pembayaran, durasi, tanggal_masuk, tanggal_akhir, tanggal_penagihan, denda, jatuh_tempo, harga_sewa, total_pembayaran, total_dibayar, tagihan, status_pembayaran) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+  exec, err := con.Exec(query, data.Id_kos, data.Id_renter, data.Id_member, data.Kamar, data.Tipe_pembayaran, data.Durasi, data.Tanggal_masuk, data.Tanggal_akhir, data.Tanggal_penagihan, data.Denda, data.Jatuh_tempo, data.Harga_sewa, data.Total_pembayaran, data.Total_dibayar, data.Tagihan, data.Status_pembayaran)
+
+  defer con.Close()
+
+  if err == nil {
+    id_int64, _ := exec.LastInsertId()
+    id_pembayaran := int(id_int64)
+    return true, id_pembayaran
+  } else {
+    return false, 0
+  }
+}
+
+func DeletePembayaran(id_pembayaran int) bool  {
+  con     :=  db.Connect()
+  query   :=  "Delete FROM pembayaran WHERE id_pembayaran = ?"
+  _, err  :=  con.Exec(query, id_pembayaran)
+
+  defer con.Close()
+
+  if err == nil {
+    return true
+  } else {
+    return false
+  }
 }
