@@ -193,8 +193,36 @@ func GetPembayaran(id_pembayaran string) structs.Pembayaran {
   return pembayaran
 }
 
-func GetHistoryPembayaran(id_renter string) string {
-  return id_renter
+func GetHistoryPembayaranRenter(id_renter, id_kos string) structs.HistoryPembayaranList {
+  con     :=  db.Connect()
+  query   :=  "SELECT b.nama_kos, a.id_pembayaran, a.tanggal_masuk, a.tanggal_akhir, a.total_pembayaran, a.total_dibayar, a.tagihan, a.status_pembayaran FROM pembayaran a JOIN kos b ON a.id_kos = b.id_kos WHERE a.id_renter = ? AND a.id_kos = ?"
+  rows, err := con.Query(query, id_renter, id_kos)
+
+  if err != nil {
+    fmt.Println(err.Error())
+  }
+
+  history       := structs.HistoryPembayaran{}
+  history_list  := structs.HistoryPembayaranList{}
+
+  for rows.Next() {
+    err2 := rows.Scan(
+      &history.Nama_kos, &history.Id_pembayaran, &history.Tanggal_masuk_ori, &history.Tanggal_akhir_ori,
+      &history.Total_pembayaran, &history.Total_dibayar, &history.Tagihan, &history.Status_pembayaran,
+    )
+
+    if err2 != nil {
+      fmt.Println(err2.Error())
+    }
+
+    history.Tanggal_masuk = history.Tanggal_masuk_ori.Format("02 Jan 2006")
+    history.Tanggal_akhir = history.Tanggal_akhir_ori.Format("02 Jan 2006")
+    history_list.HistoryPembayaranList = append(history_list.HistoryPembayaranList, history)
+  }
+
+  defer con.Close()
+
+  return history_list
 }
 
 func GetLaporanBulanan(id_kos, tahun string) structs.LaporanBulananList {

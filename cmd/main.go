@@ -63,7 +63,7 @@ func main() {
   e.GET("/status-pembayaran/:id_kos", controllers.GetStatusPembayaran, middleware.JWTWithConfig(controllers.Config)) // belum (view)
   e.GET("/pembayaran/:id_pembayaran", controllers.GetPembayaran, middleware.JWTWithConfig(controllers.Config)) // belum (view)
   e.POST("/pembayaran", controllers.AddPembayaran, middleware.JWTWithConfig(controllers.Config))
-  e.GET("/histori-pembayaran/:id_member", controllers.GetHistoryPembayaran, middleware.JWTWithConfig(controllers.Config))
+  e.GET("/history-pembayaran/:id_renter/:id_kos", controllers.GetHistoryPembayaranRenter, middleware.JWTWithConfig(controllers.Config))
 
 
 

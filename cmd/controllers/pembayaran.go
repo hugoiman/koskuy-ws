@@ -39,9 +39,10 @@ func GetPembayaran(c echo.Context) error {
   return c.JSON(http.StatusOK, data)
 }
 
-func GetHistoryPembayaran(c echo.Context) error {
-  id_member := c.Param("id_member")
-  data      := models.GetHistoryPembayaran(id_member)
+func GetHistoryPembayaranRenter(c echo.Context) error {
+  id_renter := c.Param("id_renter")
+  id_kos    := c.Param("id_kos")
+  data      := models.GetHistoryPembayaranRenter(id_renter, id_kos)
   return c.JSON(http.StatusOK, data)
 }
 

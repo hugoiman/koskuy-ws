@@ -112,3 +112,21 @@ type AddTanggalPembayaran struct {
   Tanggal_pembayaran    string              `json:"tanggal_pembayaran"`
   Nominal               int                 `json:"nominal"`
 }
+
+type HistoryPembayaranList struct {
+  HistoryPembayaranList []HistoryPembayaran `json:"history_pembayaran"`
+}
+
+type HistoryPembayaran struct {
+  Id_pembayaran         int                 `json:"id_pembayaran"`
+  Nama_kos              string              `json:"nama_kos"`
+  Tanggal_masuk_ori     time.Time           `json:"tanggal_masuk_ori"`
+  Tanggal_akhir_ori     time.Time           `json:"tanggal_akhir_ori"`
+  Total_pembayaran      int                 `json:"total_pembayaran"`
+  Total_dibayar         int                 `json:"total_dibayar"`
+  Tagihan               int                 `json:"tagihan"`
+  Status_pembayaran     string              `json:"status_pembayaran"`
+
+  Tanggal_masuk         string              `json:"tanggal_masuk"`
+  Tanggal_akhir         string              `json:"tanggal_akhir"`
+}
