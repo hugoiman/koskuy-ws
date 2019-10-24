@@ -46,6 +46,12 @@ func GetHistoryPembayaranRenter(c echo.Context) error {
   return c.JSON(http.StatusOK, data)
 }
 
+func GetHistoryPembayaranMember(c echo.Context) error {
+  id_member := c.Param("id_member")
+  data      := models.GetHistoryPembayaranMember(id_member)
+  return c.JSON(http.StatusOK, data)
+}
+
 func AddPembayaran(c echo.Context) error {
   decoder     := json.NewDecoder(c.Request().Body)
   pembayaran  := structs.AddPembayaran{}
