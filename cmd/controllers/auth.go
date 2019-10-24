@@ -8,9 +8,7 @@ import (
   "encoding/json"
 
   "koskuy-ws/cmd/structs"
-
-  "koskuy-ws/cmd/controllers/email"
-  models "koskuy-ws/cmd/models"
+  "koskuy-ws/cmd/models"
 
   "github.com/labstack/echo"
   "github.com/labstack/echo/middleware"
@@ -168,7 +166,7 @@ func ForgotPassword(c echo.Context) error {
   subjek    := "Koskuy - [Reset Password]"
   pesan     := "Hallo,<br<br>Email ini telah dikirimkan agar kamu dapat mengatur ulang password.<br><br>Silahkan klik link dibawah ini untuk me-reset password kamu. Link ini akan kadaluarsa dalam waktu 30 menit.<br><br>"+link
 
-  sent      := controllers.SendEmail(data.Email, subjek, pesan)
+  sent      := SendEmail(data.Email, subjek, pesan)
   return c.JSON(http.StatusOK, M{"status": sent}) // true/false
 }
 

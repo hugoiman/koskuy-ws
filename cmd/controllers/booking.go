@@ -7,8 +7,6 @@ import (
   "github.com/labstack/echo"
 )
 
-type M map[string]interface{}
-
 func GetBookingList(c echo.Context) error {
   id_member  := c.Param("id")
   data       := models.GetBookingList(id_member)

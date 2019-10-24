@@ -77,16 +77,16 @@ func CreateMember(nama, username, email, password string) bool {
     return false
   }
 }
-func UpdatePassword(email, password_baru string) bool {
-  con     :=  db.Connect()
-  query   :=  "UPDATE member SET password = ? WHERE email = ?"
-  _, err  :=  con.Exec(query, password_baru, email)
-
-  defer con.Close()
-
-  if err == nil {
-    return true
-  } else {
-    return false
-  }
-}
+// func UpdatePassword(email, password_baru string) bool {
+//   con     :=  db.Connect()
+//   query   :=  "UPDATE member SET password = ? WHERE email = ?"
+//   _, err  :=  con.Exec(query, password_baru, email)
+//
+//   defer con.Close()
+//
+//   if err == nil {
+//     return true
+//   } else {
+//     return false
+//   }
+// }

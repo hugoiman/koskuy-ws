@@ -13,8 +13,6 @@ import (
   "github.com/labstack/echo"
 )
 
-type M map[string]interface{}
-
 func GetMember(c echo.Context) error {
   id     := c.Param("id")
   member, err := models.GetMember(id)

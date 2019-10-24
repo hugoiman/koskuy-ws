@@ -5,14 +5,14 @@ import (
   "koskuy-ws/cmd/controllers"
 
   // c_auth "koskuy-ws/cmd/controllers/auth"
-  // c_member "koskuy-ws/cmd/controllers/member"
-  // c_kos "koskuy-ws/cmd/controllers/kos"
-  // c_pembayaran "koskuy-ws/cmd/controllers/pembayaran"
-  // c_renter "koskuy-ws/cmd/controllers/renter"
-  // c_booking "koskuy-ws/cmd/controllers/booking"
+  // controllers "koskuy-ws/cmd/controllers/member"
+  // controllers "koskuy-ws/cmd/controllers/kos"
+  // controllers "koskuy-ws/cmd/controllers/pembayaran"
+  // controllers "koskuy-ws/cmd/controllers/renter"
+  // controllers "koskuy-ws/cmd/controllers/booking"
   // c_favorit "koskuy-ws/cmd/controllers/favorit"
-  // c_notifikasi "koskuy-ws/cmd/controllers/notifikasi"
-  // c_fasilitas "koskuy-ws/cmd/controllers/fasilitas"
+  // controllers "koskuy-ws/cmd/controllers/notifikasi"
+  // controllers "koskuy-ws/cmd/controllers/fasilitas"
 
   "github.com/labstack/echo"
   "github.com/labstack/echo/middleware"
@@ -48,39 +48,39 @@ func main() {
   e.POST("/reset-password", controllers.ResetPassword, middleware.JWTWithConfig(controllers.ConfigResetPassword))
 
   //  MEMBER
-  e.GET("/member/:id", c_member.GetMember, middleware.JWTWithConfig(controllers.Config))
-  e.PUT("/member/:id", c_member.EditMember, middleware.JWTWithConfig(controllers.Config))
-  e.PUT("/password/:id_member", c_member.ChangePassword, middleware.JWTWithConfig(controllers.Config))
-  e.GET("/favorit/:id_member", c_favorit.GetKosFavorit, middleware.JWTWithConfig(controllers.Config))
+  e.GET("/member/:id", controllers.GetMember, middleware.JWTWithConfig(controllers.Config))
+  e.PUT("/member/:id", controllers.EditMember, middleware.JWTWithConfig(controllers.Config))
+  e.PUT("/password/:id_member", controllers.ChangePassword, middleware.JWTWithConfig(controllers.Config))
+  e.GET("/favorit/:id_member", controllers.GetKosFavorit, middleware.JWTWithConfig(controllers.Config))
 
   // DATA KOS
-  e.GET("/mykos/:id_member", c_kos.GetMykosList, middleware.JWTWithConfig(controllers.Config))
-  e.GET("/mykos/:id_kos/:id_member", c_kos.GetMykos, middleware.JWTWithConfig(controllers.Config))
+  e.GET("/mykos/:id_member", controllers.GetMykosList, middleware.JWTWithConfig(controllers.Config))
+  e.GET("/mykos/:id_kos/:id_member", controllers.GetMykos, middleware.JWTWithConfig(controllers.Config))
 
   // PEMBAYARAN
-  e.GET("/laporan-pembayaran/:id_kos", c_pembayaran.GetLaporanPembayaran, middleware.JWTWithConfig(controllers.Config))
-  e.GET("/laporan-bulanan/:id_kos", c_pembayaran.GetLaporanBulanan, middleware.JWTWithConfig(controllers.Config))
-  e.GET("/status-pembayaran/:id_kos", c_pembayaran.GetStatusPembayaran, middleware.JWTWithConfig(controllers.Config)) // belum (view)
-  e.GET("/pembayaran/:id_pembayaran", c_pembayaran.GetPembayaran, middleware.JWTWithConfig(controllers.Config)) // belum (view)
-  e.POST("/pembayaran", c_pembayaran.AddPembayaran, middleware.JWTWithConfig(controllers.Config))
-  e.GET("/histori-pembayaran/:id_member", c_pembayaran.GetHistoryPembayaran, middleware.JWTWithConfig(controllers.Config))
+  e.GET("/laporan-pembayaran/:id_kos", controllers.GetLaporanPembayaran, middleware.JWTWithConfig(controllers.Config))
+  e.GET("/laporan-bulanan/:id_kos", controllers.GetLaporanBulanan, middleware.JWTWithConfig(controllers.Config))
+  e.GET("/status-pembayaran/:id_kos", controllers.GetStatusPembayaran, middleware.JWTWithConfig(controllers.Config)) // belum (view)
+  e.GET("/pembayaran/:id_pembayaran", controllers.GetPembayaran, middleware.JWTWithConfig(controllers.Config)) // belum (view)
+  e.POST("/pembayaran", controllers.AddPembayaran, middleware.JWTWithConfig(controllers.Config))
+  e.GET("/histori-pembayaran/:id_member", controllers.GetHistoryPembayaran, middleware.JWTWithConfig(controllers.Config))
 
 
 
   // RENTER
-  e.GET("/daftar-anak-kos/:id_kos", c_renter.GetDaftarRenter, middleware.JWTWithConfig(controllers.Config))  // belum (view)
-  e.GET("/anak-kos/:slug", c_renter.GetRenter, middleware.JWTWithConfig(controllers.Config))    // belum  (view)
+  e.GET("/daftar-anak-kos/:id_kos", controllers.GetDaftarRenter, middleware.JWTWithConfig(controllers.Config))  // belum (view)
+  e.GET("/anak-kos/:slug", controllers.GetRenter, middleware.JWTWithConfig(controllers.Config))    // belum  (view)
 
   //  BOOKING
-  e.GET("/booking/:id", c_booking.GetBookingList, middleware.JWTWithConfig(controllers.Config))  // id_member
-  e.PUT("/booking/:id", c_booking.UpdateStatusBooking, middleware.JWTWithConfig(controllers.Config)) //  id_booking
+  e.GET("/booking/:id", controllers.GetBookingList, middleware.JWTWithConfig(controllers.Config))  // id_member
+  e.PUT("/booking/:id", controllers.UpdateStatusBooking, middleware.JWTWithConfig(controllers.Config)) //  id_booking
 
   //  Notifikasi
-  e.GET("/notifikasi_booking/:id_member", c_notifikasi.GetNotifikasiBookingList, middleware.JWTWithConfig(controllers.Config))  // id_member
-  // e.GET("/total_notifikasi_booking/:id_member", c_notifikasi.GetNotifikasiList, middleware.JWTWithConfig(controllers.Config))  // id_member
+  e.GET("/notifikasi_booking/:id_member", controllers.GetNotifikasiBookingList, middleware.JWTWithConfig(controllers.Config))  // id_member
+  // e.GET("/total_notifikasi_booking/:id_member", controllers.GetNotifikasiList, middleware.JWTWithConfig(controllers.Config))  // id_member
 
   // Fasilitas
-  e.GET("/all-fasilitas", c_fasilitas.GetAllFasilitas, middleware.JWTWithConfig(controllers.Config))
+  e.GET("/all-fasilitas", controllers.GetAllFasilitas, middleware.JWTWithConfig(controllers.Config))
 
   fmt.Println("service main started at :8000")
   e.Logger.Fatal(e.Start(":8000"))
