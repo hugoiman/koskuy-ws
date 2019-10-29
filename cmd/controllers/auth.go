@@ -13,6 +13,8 @@ import (
   "github.com/labstack/echo"
   "github.com/labstack/echo/middleware"
   "github.com/dgrijalva/jwt-go"
+
+  third "koskuy-ws/third_party"
 )
 
 const COOKIE_NAME = "cookie_token"
@@ -166,7 +168,7 @@ func ForgotPassword(c echo.Context) error {
   subjek    := "Koskuy - [Reset Password]"
   pesan     := "Hallo,<br<br>Email ini telah dikirimkan agar kamu dapat mengatur ulang password.<br><br>Silahkan klik link dibawah ini untuk me-reset password kamu. Link ini akan kadaluarsa dalam waktu 30 menit.<br><br>"+link
 
-  sent      := SendEmail(data.Email, subjek, pesan)
+  sent      := third.SendEmail(data.Email, subjek, pesan)
   return c.JSON(http.StatusOK, M{"status": sent}) // true/false
 }
 

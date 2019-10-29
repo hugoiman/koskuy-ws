@@ -107,12 +107,6 @@ type AddPembayaran struct {
   Tanggal_pembayaran    string              `json:"tanggal_pembayaran"`
 }
 
-type AddTanggalPembayaran struct {
-  Id_pembayaran         int                 `json:"id_pembayaran"`
-  Tanggal_pembayaran    string              `json:"tanggal_pembayaran"`
-  Nominal               int                 `json:"nominal"`
-}
-
 type HistoryPembayaranList struct {
   HistoryPembayaranList []HistoryPembayaran `json:"history_pembayaran"`
 }
